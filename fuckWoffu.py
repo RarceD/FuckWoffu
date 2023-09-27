@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+from datetime import datetime
 
 
 def get_json_data():
@@ -48,6 +49,22 @@ def fuck_woffu(token, company_name) -> bool:
         return False
 
 
+def get_bank_holidays(token, company_name) -> list[datetime]:
+    url = "https://" + company_name + ".woffu.com/api/users/calendar-events/next"
+    headers = {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+    }
+    response = requests.get(url, headers=headers, verify=False)
+    holidays_list = []
+    if response.status_code == 200:
+        holidays_array = response.json()
+        for day in holidays_array:
+            holidays_list.append(datetime.strptime(
+                day['Date'], '%Y-%m-%dT%H:%M:%S.%f'))
+    return holidays_list
+
+
 def is_sign_time(signTimes: []) -> bool:
     current_time = time.strftime("%H:%M")
     weekday = time.localtime(time.time()).tm_wday
@@ -59,7 +76,13 @@ def is_sign_time(signTimes: []) -> bool:
 '''
 email, password, sign_times, company_name = get_json_data()
 if __name__ == "__main__":
+    current_time = time.strftime("%H:%M")
+
+    bearer_token = get_token(email, password, company_name)
+    get_bank_holidays(bearer_token, company_name)
+
     while True:
+        break
         if is_sign_time(sign_times):
             bearer_token = get_token(email, password, company_name)
             success = fuck_woffu(bearer_token, company_name)
