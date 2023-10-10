@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 
+
 class ISignInManager(ABC):
     def __init__(self):
         pass
@@ -10,5 +11,5 @@ class ISignInManager(ABC):
         pass
 
     @abstractmethod
-    def get_holiday(self) -> list[datetime]:
+    def get_holiday(self):
         pass

@@ -24,7 +24,7 @@ class SignInWoffu(ISignInManager):
             "timezoneOffset": -120
         }
         response = requests.post(
-            url, json=payload, headers=self.headers_token, verify=False)
+            url, json=payload, headers=self.headers_token)
         if response.status_code == 200:
             return True
         else:
@@ -33,9 +33,9 @@ class SignInWoffu(ISignInManager):
     def get_holiday(self):
         return self._get_bank_holiday() + self._get_pto_holiday()
 
-    def _get_bank_holiday(self) -> list[datetime]:
+    def _get_bank_holiday(self):
         url = self.url_path + "/users/calendar-events/next"
-        response = requests.get(url, headers=self.headers_token, verify=False)
+        response = requests.get(url, headers=self.headers_token)
         holidays_list = []
         if response.status_code == 200:
             holidays_array = response.json()
@@ -44,9 +44,9 @@ class SignInWoffu(ISignInManager):
                     day['Date'], '%Y-%m-%dT%H:%M:%S.%f'))
         return holidays_list
 
-    def _get_pto_holiday(self) -> list[datetime]:
+    def _get_pto_holiday(self):
         url = self.url_path + "/users/requests/list?pageIndex=0&pageSize=10&statusType=20"
-        response = requests.get(url, headers=self.headers_token, verify=False)
+        response = requests.get(url, headers=self.headers_token)
         holidays_list = []
         if response.status_code == 200:
             holidays_array = response.json()
@@ -65,7 +65,7 @@ class SignInWoffu(ISignInManager):
             "username": email,
             "password": password
         }
-        response = requests.post(url, headers=headers, data=data, verify=False)
+        response = requests.post(url, headers=headers, data=data)
         if response.status_code == 200:
             return response.json()['access_token']
         else:
