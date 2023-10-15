@@ -53,6 +53,13 @@ class SignInWoffu(ISignInManager):
             for day in holidays_array:
                 holidays_list.append(datetime.strptime(
                     day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f'))
+        url = self.url_path + "/users/requests/list?pageIndex=0&pageSize=10&statusType=25"
+        response = requests.get(url, headers=self.headers_token)
+        if response.status_code == 200:
+            holidays_array = response.json()
+            for day in holidays_array:
+                holidays_list.append(datetime.strptime(
+                    day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f'))
         return holidays_list
 
     def _get_token(self, email, password):
