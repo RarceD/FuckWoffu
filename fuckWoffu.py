@@ -1,9 +1,15 @@
 import json
 import time
 from datetime import datetime
+import logging
 
 from SignInWoffu import SignInWoffu
 
+logging.basicConfig(
+    filename='logs/fuckWoffu.log',
+    filemode='a',
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%d-%b-%y %H:%M:%S')
 
 def get_json_data():
     with open('secrets.json', 'r') as file:
@@ -35,10 +41,9 @@ def main():
         if not is_holidays(holidays):
             success = sign_in_app.sign_in()
             if success:
-                print('Fuck woffu -> ', time.strftime("%H:%M"))
+                logging.warning('Sign in succesfully')
             else:
-                print('Error maybe something should be done ¯\(ツ)/¯ ',
-                      time.strftime("%H:%M"))
+                logging.error('Error maybe something should be done  ¯\(ツ)/¯ ')
 
 
 if __name__ == "__main__":
