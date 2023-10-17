@@ -1,4 +1,5 @@
 import json
+import sched
 import time
 from datetime import datetime
 import logging
@@ -31,9 +32,10 @@ def is_holidays(holidays) -> bool:
 '''
     Every 60 seconds I check my enter/leave time and execute request
 '''
+TIME_TO_CHECK = 60
 
 
-def main():
+def main(scheduler):
     email, password, sign_times, company_name = get_json_data()
     if is_sign_hour(sign_times):
         sign_in_app = SignInWoffu(email, password, company_name)
@@ -45,8 +47,11 @@ def main():
             else:
                 logging.error('Error maybe something should be done  ¯\(ツ)/¯ ')
 
+    # Restart the timer
+    scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
+
 
 if __name__ == "__main__":
-    while True:
-        main()
-        time.sleep(60)
+    scheduler = sched.scheduler(time.time, time.sleep)
+    scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
+    scheduler.run()
