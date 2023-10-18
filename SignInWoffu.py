@@ -25,10 +25,7 @@ class SignInWoffu(ISignInManager):
         }
         response = requests.post(
             url, json=payload, headers=self.headers_token)
-        if response.status_code == 200:
-            return True
-        else:
-            return False
+        return response.status_code == 201
 
     def get_holiday(self):
         return self._get_bank_holiday() + self._get_pto_holiday()
