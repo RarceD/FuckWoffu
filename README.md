@@ -1,11 +1,14 @@
 # Woffu Auto Check-In script
 
-Simple script in python that click on `Clock In` and `Clock Out` button inside Woffu.
+Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](https://www.woffu.com/en). It detects holidays and only execute it when on working days.
 
 
 ## How to run
 
-1. You need Python 3.6+
+1. You need Python 3.6+ and run:
+```bash
+    pip install -r requirements.txt
+```
 2. Open `secrets.json` file and add your credential and login email.
 
 ```json
