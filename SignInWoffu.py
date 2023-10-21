@@ -42,15 +42,9 @@ class SignInWoffu(ISignInManager):
         return holidays_list
 
     def _get_pto_holiday(self):
-        url = self.url_path + "/users/requests/list?pageIndex=0&pageSize=10&statusType=20"
+        url = self.url_path + "/users/requests/list?pageIndex=0&pageSize=10&statusType=null"
         response = requests.get(url, headers=self.headers_token)
         holidays_list = []
-        if response.status_code == 200:
-            holidays_array = response.json()
-            for day in holidays_array:
-                self._calculate_vacation_range(day, holidays_list)
-        url = self.url_path + "/users/requests/list?pageIndex=0&pageSize=10&statusType=25"
-        response = requests.get(url, headers=self.headers_token)
         if response.status_code == 200:
             holidays_array = response.json()
             for day in holidays_array:
