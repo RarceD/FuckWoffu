@@ -1,6 +1,6 @@
 from ISignInManager import ISignInManager
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class SignInWoffu(ISignInManager):
@@ -48,16 +48,30 @@ class SignInWoffu(ISignInManager):
         if response.status_code == 200:
             holidays_array = response.json()
             for day in holidays_array:
-                holidays_list.append(datetime.strptime(
-                    day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f'))
+                self._calculate_vacation_range(day, holidays_list)
         url = self.url_path + "/users/requests/list?pageIndex=0&pageSize=10&statusType=25"
         response = requests.get(url, headers=self.headers_token)
         if response.status_code == 200:
             holidays_array = response.json()
             for day in holidays_array:
-                holidays_list.append(datetime.strptime(
-                    day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f'))
+                self._calculate_vacation_range(day, holidays_list)
         return holidays_list
+
+    def _calculate_vacation_range(self, day, holidays_list):
+        requested_days = int(day['RequestedFormatted']['Values'][0])
+        first_day = datetime.strptime(
+            day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f')
+        if requested_days == 1:
+            holidays_list.append(first_day)
+            return
+
+        # Detect vacation range:
+        last_day = datetime.strptime(
+            day['EndDate'], '%Y-%m-%dT%H:%M:%S.%f')
+        time_difference = (last_day - first_day).days + 1
+        for d in range(time_difference):
+            annother_day = first_day + timedelta(days=d)
+            holidays_list.append(annother_day)
 
     def _get_token(self, email, password):
         url = "https://" + self.company_name + ".woffu.com/token"
