@@ -9,7 +9,7 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
 ```bash
     pip install -r requirements.txt
 ```
-2. Open `secrets.json` file and add your credential and login email.
+2. Open `config/secrets.json` file and add your credential and login email.
 
 ```json
 {
