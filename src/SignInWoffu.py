@@ -1,6 +1,7 @@
-from ISignInManager import ISignInManager
 import requests
 from datetime import datetime, timedelta
+
+from src.ISignInManager import ISignInManager
 
 
 class SignInWoffu(ISignInManager):
