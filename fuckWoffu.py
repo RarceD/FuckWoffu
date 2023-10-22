@@ -1,33 +1,14 @@
-import json
 import sched
 import time
-from datetime import datetime
 import logging
-
-from SignInWoffu import SignInWoffu
+from src.SignInWoffu import *
+from src.utils import *
 
 logging.basicConfig(
     filename='logs/fuckWoffu.log',
     filemode='a',
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%d-%b-%y %H:%M:%S')
-
-def get_json_data():
-    with open('secrets.json', 'r') as file:
-        json_content = json.load(file)
-        return json_content['email'], json_content['password'], json_content['times'], json_content['companyName']
-
-
-def is_sign_hour(signTimes) -> bool:
-    current_time = time.strftime("%H:%M")
-    weekday = time.localtime(time.time()).tm_wday
-    return current_time in signTimes and weekday not in {5, 6}
-
-
-def is_holidays(holidays) -> bool:
-    current_time = datetime.today()
-    return any(pto.month == current_time.month and pto.day == current_time.day for pto in holidays)
-
 
 '''
     Every 60 seconds I check my enter/leave time and execute request
@@ -46,6 +27,8 @@ def main(scheduler):
                 logging.warning('Sign in succesfully')
             else:
                 logging.error('Error maybe something should be done  ¯\(ツ)/¯ ')
+        else:
+            logging.warning('I am on holiday, no check in')
 
     # Restart the timer
     scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
