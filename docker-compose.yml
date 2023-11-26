@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  woffu:
+    build: .
+    volumes:
+      - .:/usr/src/app
