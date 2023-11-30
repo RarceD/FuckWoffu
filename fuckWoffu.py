@@ -1,6 +1,7 @@
 import sched
 import time
 import logging
+from Telegram import notify
 from src.SignInWoffu import *
 from src.utils import *
 
@@ -24,6 +25,7 @@ def main(scheduler):
         if not is_holidays(holidays):
             success = sign_in_app.sign_in()
             if success:
+                notify('Sign in/out succesfully')
                 logging.warning('Sign in succesfully')
             else:
                 logging.error('Error maybe something should be done  ¯\(ツ)/¯ ')
