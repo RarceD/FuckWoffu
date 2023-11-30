@@ -1,7 +1,7 @@
 import sched
 import time
 import logging
-from Telegram import notify
+from src.Telegram import notify
 from src.SignInWoffu import *
 from src.utils import *
 
