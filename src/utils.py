@@ -16,4 +16,5 @@ def is_sign_hour(signTimes) -> bool:
 
 def is_holidays(holidays) -> bool:
     current_time = datetime.today()
-    return any(pto.month == current_time.month and pto.day == current_time.day for pto in holidays)
+    return any(pto.month == current_time.month and pto.day == current_time.day and pto.year == current_time.year 
+               for pto in holidays)
