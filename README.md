@@ -26,6 +26,11 @@ Execute the following command
     python3 fuckWoffu.py
 ```
 
+Run as background service without logs:
+```bash
+nohup python3 fuckWoffu.py &
+```
+
 Forget about everything, it also detect your holidays/pto and do not clock in
 
 # Run with docker:
