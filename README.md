@@ -47,10 +47,6 @@ Directly by composer:
 docker compose up
 ```
 
-Here's an improved version of your text:
-
----
-
 # Testing the Connection
 
 To verify the connection to Woffu without registering any inputs, you can use the `--test` argument. This operation ensures that your secrets are properly configured without making any changes in Woffu.
