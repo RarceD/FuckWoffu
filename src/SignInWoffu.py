@@ -53,20 +53,27 @@ class SignInWoffu(ISignInManager):
         return holidays_list
 
     def _calculate_vacation_range(self, day, holidays_list):
-        requested_days = int(day['RequestedFormatted']['Values'][0])
-        first_day = datetime.strptime(
-            day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f')
-        if requested_days == 1:
-            holidays_list.append(first_day)
-            return
+        requested_days = float(day['RequestedFormatted']['Values'][0])
+        first_day = datetime.strptime(day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f')
 
-        # Detect vacation range:
-        last_day = datetime.strptime(
-            day['EndDate'], '%Y-%m-%dT%H:%M:%S.%f')
+        # Append the first day
+        holidays_list.append(first_day)
+        
+        # Calculate the entire vacation range
+        last_day = datetime.strptime(day['EndDate'], '%Y-%m-%dT%H:%M:%S.%f')
         time_difference = (last_day - first_day).days + 1
-        for d in range(time_difference):
+        
+        # Append all full days
+        for d in range(1, int(requested_days)):
             annother_day = first_day + timedelta(days=d)
             holidays_list.append(annother_day)
+        
+        # Handle fractional day at the end
+        if requested_days % 1 != 0:
+            partial_day = first_day + timedelta(days=int(requested_days))
+            holidays_list.append(partial_day)
+
+        return holidays_list
 
     def _get_token(self, email, password):
         url = "https://" + self.company_name + ".woffu.com/token"
