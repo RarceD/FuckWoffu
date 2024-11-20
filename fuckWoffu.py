@@ -22,7 +22,7 @@ ERROR_TOKEN = '¯\(ツ)/¯'
 
 def main(scheduler):
     email, password, sign_times, company_name = get_json_data()
-    if True:
+    if is_sign_hour(sign_times):
         sign_in_app = SignInWoffu(email, password, company_name)
         holidays = sign_in_app.get_holiday()
         if not is_holidays(holidays):
