@@ -8,7 +8,7 @@ from src.Telegram import notify
 def get_json_data():
     with open('config/secrets.json', 'r') as file:
         json_content = json.load(file)
-        return json_content['email'], json_content['password'], json_content['companyName'], json_content['times'], json_content['lunch_times'], json_content['summer_times'], json_content['summer_period'], json_content['unpunctuality']
+        return json_content['email'], json_content['password'], json_content['companyName'], json_content['times'], json_content['lunch_times'], json_content['summer_times'], json_content['summer_period'], json_content['unpunctuality'], json_content['lunch_unpunctuality']
 
 
 def is_sign_hour(signTimes, delay) -> bool:
@@ -17,8 +17,8 @@ def is_sign_hour(signTimes, delay) -> bool:
     return current_time in signTimes and weekday not in {5, 6}
 
 
-def is_lunch_time(lunch_sign_times) -> bool:
-    current_time = time.strftime("%H:%M")
+def is_lunch_time(lunch_sign_times, lunch_delay) -> bool:
+    current_time = time.strftime("%H:%M") - timedelta(lunch_delay)
     weekday = time.localtime(time.time()).tm_wday
     return current_time in lunch_sign_times and weekday not in {5, 6}
 
@@ -26,6 +26,11 @@ def is_lunch_time(lunch_sign_times) -> bool:
 def is_end_of_day(times, delay) -> bool:
     current_time = time.strftime("%H:%M") - timedelta(delay)
     return current_time == times[-1]
+
+
+def is_end_of_lunch(lunch_times, lunch_delay) -> bool:
+    current_time = time.strftime("%H:%M") - timedelta(lunch_delay)
+    return current_time == lunch_times[-1]
 
 
 def is_holidays(holidays) -> bool:

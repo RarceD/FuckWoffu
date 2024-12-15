@@ -16,9 +16,10 @@ logging.basicConfig(
 '''
 TIME_TO_CHECK = 60
 delay = 0
+lunch_delay = 0
 
 def main(scheduler):
-    email, password, company_name, times, lunch_times, summer_times, summer_period, unpunctuality = get_json_data()
+    email, password, company_name, times, lunch_times, summer_times, summer_period, unpunctuality, lunch_unpunctuality = get_json_data()
     
     sign_in_app = SignInWoffu(email, password, company_name)
 
@@ -35,9 +36,12 @@ def main(scheduler):
             sign_in(sign_in_app)
 
     else: #Regular time
-        if (is_sign_hour(times, delay) or is_lunch_time(lunch_times)):
+        if (is_sign_hour(times, delay) or is_lunch_time(lunch_times, lunch_delay)):
             if is_end_of_day(times, delay): # Create new random delay for next day
                 delay = randrange(unpunctuality)
+
+            elif is_end_of_lunch(lunch_times, lunch_delay): # Create new random delay for lunch for next day
+                lunch_delay = randrange(lunch_unpunctuality)
 
             sign_in(sign_in_app)
 
