@@ -1,6 +1,7 @@
 import sched
 import time
 import logging
+from random import randrange
 from src.SignInWoffu import *
 from src.utils import *
 
@@ -14,9 +15,10 @@ logging.basicConfig(
     Every 60 seconds I check my enter/leave time and execute request
 '''
 TIME_TO_CHECK = 60
+delay = 0
 
 def main(scheduler):
-    email, password, company_name, times, summer_times, summer_period = get_json_data()
+    email, password, company_name, times, lunch_times, summer_times, summer_period, unpunctuality = get_json_data()
     
     sign_in_app = SignInWoffu(email, password, company_name)
 
@@ -25,8 +27,19 @@ def main(scheduler):
         for date in summer_period
         ]
 
-    if is_sign_hour(summer_times if is_summer_time(summer_period) else times):
-        sign_in(sign_in_app)
+    if is_summer_time(summer): #Summer time
+        if (is_sign_hour(summer_times, delay)):
+            if is_end_of_day(summer_times, delay): # Create new random delay for next day
+                delay = randrange(unpunctuality)
+
+            sign_in(sign_in_app)
+
+    else: #Regular time
+        if (is_sign_hour(times, delay) or is_lunch_time(lunch_times)):
+            if is_end_of_day(times, delay): # Create new random delay for next day
+                delay = randrange(unpunctuality)
+
+            sign_in(sign_in_app)
 
     # Restart the timer
     scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
