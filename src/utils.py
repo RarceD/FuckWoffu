@@ -2,13 +2,14 @@ import json
 import time
 import logging
 from datetime import datetime, timedelta
+from random import randrange
 from src.SignInWoffu import *
 from src.Telegram import notify
 
 def get_json_data():
     with open('config/secrets.json', 'r') as file:
         json_content = json.load(file)
-        return json_content['email'], json_content['password'], json_content['companyName'], json_content['times'], json_content['lunch_times'], json_content['summer_times'], json_content['summer_period'], json_content['unpunctuality'], json_content['lunch_unpunctuality']
+        return json_content['email'], json_content['password'], json_content['companyName'], json_content['times'], json_content['summer_times'], json_content['summer_period'], json_content['unpunctuality'], json_content['lunch_unpunctuality'], json_content['lunch_times'], json_content['min_time_to_lunch'], json_content['max_time_to_lunch']
 
 
 def is_sign_hour(signTimes, delay) -> bool:
@@ -43,6 +44,12 @@ def is_summer_time(summer_period) -> bool:
     current_time = datetime.today()
     return (current_time.day >= summer_period[0].day and current_time.day <= summer_period[1].day 
             and current_time.month >= summer_period[0].month and current_time.day <= summer_period[1].month)
+
+
+def set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch):
+    lunch_duration = randrange(min_time_to_lunch, max_time_to_lunch)
+    lunch_end = datetime.strptime(lunch_time, "%H:%M") + timedelta(lunch_duration)
+    return [lunch_time, datetime.strftime(lunch_end, "%H:%M")]
 
 
 def sign_in(sign_in_app: SignInWoffu):
