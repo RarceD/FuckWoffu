@@ -1,7 +1,6 @@
 import sched
 import time
 import logging
-from src.Telegram import notify
 from src.SignInWoffu import *
 from src.utils import *
 
@@ -16,21 +15,18 @@ logging.basicConfig(
 '''
 TIME_TO_CHECK = 60
 
-
 def main(scheduler):
-    email, password, sign_times, company_name = get_json_data()
-    if is_sign_hour(sign_times):
-        sign_in_app = SignInWoffu(email, password, company_name)
-        holidays = sign_in_app.get_holiday()
-        if not is_holidays(holidays):
-            success = sign_in_app.sign_in()
-            if success:
-                notify('Sign in/out succesfully')
-                logging.warning('Sign in succesfully')
-            else:
-                logging.error('Error maybe something should be done  ¯\(ツ)/¯ ')
-        else:
-            logging.warning('I am on holiday, no check in')
+    email, password, company_name, times, summer_times, summer_period = get_json_data()
+    
+    sign_in_app = SignInWoffu(email, password, company_name)
+
+    summer = [
+        datetime.strptime(f"{date}/{datetime.now().year}", "%d/%m/%Y").time()
+        for date in summer_period
+        ]
+
+    if is_sign_hour(summer_times if is_summer_time(summer_period) else times):
+        sign_in(sign_in_app)
 
     # Restart the timer
     scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
