@@ -20,7 +20,7 @@ lunch_delay = 0
 lunch_duration = 0
 lunch_times = None
 
-def main(scheduler):
+def main(scheduler, delay, lunch_delay, lunch_duration, lunch_times):
     email, password, company_name, times, summer_times, summer_period, unpunctuality, lunch_unpunctuality, lunch_time, min_time_to_lunch, max_time_to_lunch = get_json_data()
 
     if lunch_times is None:
@@ -29,7 +29,7 @@ def main(scheduler):
     sign_in_app = SignInWoffu(email, password, company_name)
 
     summer = [
-        datetime.strptime(f"{date}/{datetime.now().year}", "%d/%m/%Y").time()
+        datetime.strptime(f"{date}/{datetime.now().year}", "%d/%m/%Y")
         for date in summer_period
         ]
 
@@ -54,10 +54,10 @@ def main(scheduler):
             sign_in(sign_in_app)
 
     # Restart the timer
-    scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
+    scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler, delay, lunch_delay, lunch_duration, lunch_times))
 
 
 if __name__ == "__main__":
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler,))
+    scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler, delay, lunch_delay, lunch_duration, lunch_times))
     scheduler.run()
