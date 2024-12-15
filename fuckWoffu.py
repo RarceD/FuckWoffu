@@ -22,7 +22,7 @@ lunch_times = None
 
 def main(scheduler):
     email, password, company_name, times, summer_times, summer_period, unpunctuality, lunch_unpunctuality, lunch_time, min_time_to_lunch, max_time_to_lunch = get_json_data()
-    
+
     if lunch_times is None:
         lunch_times = set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch)
 

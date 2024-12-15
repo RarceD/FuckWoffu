@@ -42,8 +42,7 @@ def is_holidays(holidays) -> bool:
 
 def is_summer_time(summer_period) -> bool:
     current_time = datetime.today()
-    return (current_time.day >= summer_period[0].day and current_time.day <= summer_period[1].day 
-            and current_time.month >= summer_period[0].month and current_time.day <= summer_period[1].month)
+    return (summer_period[0] <= current_time.day <= summer_period[1])
 
 
 def set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch):
