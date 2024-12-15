@@ -7,7 +7,7 @@ from src.SignInWoffu import *
 from src.Telegram import notify
 
 def get_json_data():
-    with open('config/secrets.json', 'r') as file:
+    with open('config/config.json', 'r') as file:
         json_content = json.load(file)
         return json_content['email'], json_content['password'], json_content['companyName'], json_content['times'], json_content['summer_times'], json_content['summer_period'], json_content['unpunctuality'], json_content['lunch_unpunctuality'], json_content['lunch_time'], json_content['min_time_to_lunch'], json_content['max_time_to_lunch']
 
@@ -30,6 +30,8 @@ def is_end_of_day(times, delay) -> bool:
 
 
 def is_end_of_lunch(lunch_times, lunch_delay) -> bool:
+    if lunch_times is None:
+        return False
     current_time = (datetime.now() - timedelta(minutes=lunch_delay)).strftime("%H:%M")
     return current_time == lunch_times[-1]
 
@@ -41,11 +43,15 @@ def is_holidays(holidays) -> bool:
 
 
 def is_summer_time(summer_period) -> bool:
+    if summer_period is None:
+        return False
     current_time = datetime.today()
     return (summer_period[0] <= current_time <= summer_period[1])
 
 
 def set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch):
+    if lunch_time is None:
+        return []
     lunch_duration = randrange(min_time_to_lunch, max_time_to_lunch)
     lunch_end = datetime.strptime(lunch_time, "%H:%M") + timedelta(lunch_duration)
     return [lunch_time, lunch_end.strftime("%H:%M")]

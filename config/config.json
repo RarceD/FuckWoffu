@@ -3,10 +3,10 @@
     "password": "",
     "companyName": "",
 
-    "times": ["09:00", "17:30"],
+    "times": ["09:00", "16:00"],
 
-    "summer_times": ["08:00", "15:00"],
-    "summer_period": ["1/8", "31/8"],
+    "summer_times": [],
+    "summer_period": [],
 
     "unpunctuality": 10,
     "lunch_unpunctuality": 60,

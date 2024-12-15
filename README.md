@@ -59,7 +59,6 @@ There is an option to randomize your entry, leave and lunch time to look more hu
 }
 ```
 
-
 If you have summer time (maybe it doesn't exist in your country) fill it with the times like the regular ones and the starting and ending day withouth the year like in this example:
 
 ```json

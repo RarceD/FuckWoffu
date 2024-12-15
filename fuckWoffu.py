@@ -23,15 +23,17 @@ lunch_times = None
 def main(scheduler, delay, lunch_delay, lunch_duration, lunch_times):
     email, password, company_name, times, summer_times, summer_period, unpunctuality, lunch_unpunctuality, lunch_time, min_time_to_lunch, max_time_to_lunch = get_json_data()
 
+    lunch_time = None if lunch_time == "" else lunch_time
+    
     if lunch_times is None:
         lunch_times = set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch)
 
     sign_in_app = SignInWoffu(email, password, company_name)
 
-    summer = [
+    summer = None if not summer_period else [
         datetime.strptime(f"{date}/{datetime.now().year}", "%d/%m/%Y")
         for date in summer_period
-        ]
+    ]
 
     if is_summer_time(summer): #Summer time
         if (is_sign_hour(summer_times, delay)):
