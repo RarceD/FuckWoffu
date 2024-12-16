@@ -1,15 +1,20 @@
 import sched
 import time
 import logging
+import argparse
 from random import randrange
 from src.SignInWoffu import *
 from src.utils import *
 
-logging.basicConfig(
-    filename='logs/fuckWoffu.log',
-    filemode='a',
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%d-%b-%y %H:%M:%S')
+
+def conf_logging(loglevel):
+    logging.basicConfig(
+        filename='logs/fuckWoffu.log',
+        filemode='a',
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%d-%b-%y %H:%M:%S',
+        level=loglevel.upper())
+
 
 '''
     Every 60 seconds I check my enter/leave time and execute request
@@ -21,10 +26,11 @@ lunch_duration = 0
 lunch_times = None
 
 def main(scheduler, delay, lunch_delay, lunch_duration, lunch_times):
+    logging.debug('Starting main function')
     email, password, company_name, times, summer_times, summer_period, unpunctuality, lunch_unpunctuality, lunch_time, min_time_to_lunch, max_time_to_lunch = get_json_data()
 
     lunch_time = None if lunch_time == "" else lunch_time
-    
+
     if lunch_times is None:
         lunch_times = set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch)
 
@@ -60,6 +66,15 @@ def main(scheduler, delay, lunch_delay, lunch_duration, lunch_times):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument( '-log',
+                        '--loglevel',
+                        default='warning',
+                        help='Provide logging level. Example --loglevel debug, default=warning' )
+    args = parser.parse_args()
+    
+    conf_logging(args.loglevel)
+
     scheduler = sched.scheduler(time.time, time.sleep)
     scheduler.enter(TIME_TO_CHECK, 1, main, (scheduler, delay, lunch_delay, lunch_duration, lunch_times))
     scheduler.run()
