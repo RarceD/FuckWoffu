@@ -24,7 +24,7 @@ Add your credential, login email and company name.
 }
 ```
 
-You need to provide the hours you are supposed to click the annoying button. Always an even number, you need to sign in and then sign out.
+You need to provide the hours you are supposed to click the annoying button. You need to sign in and then sign out.
 
 ```json
 {
@@ -50,7 +50,7 @@ If you don't have lunch break, just leave the time empty.
 }
 ```
 
-There is an option to randomize your entry, leave and lunch time to look more human. You just have to set the maximun unpunctuality for your entry and lunch.
+There is an option to randomize your entry, leave and lunch time to look more human. You just have to set the maximun unpunctuality for your entry and leave, and lunch.
 
 ```json
 {
