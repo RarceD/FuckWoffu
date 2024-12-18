@@ -4,7 +4,6 @@ import logging
 from datetime import datetime, timedelta
 from random import randrange
 from src.SignInWoffu import *
-from src.Telegram import notify
 
 def get_json_data():
     with open("config/config.json", "r") as file:
@@ -83,11 +82,6 @@ def fix_times_format(times):
 def sign_in(sign_in_app: SignInWoffu):
     holidays = sign_in_app.get_holiday()
     if not is_holidays(holidays):
-        success = sign_in_app.sign_in()
-        if success:
-            notify("Sign in/out succesfully")
-            logging.info("Sign in/out succesfully")
-        else:
-            logging.error("Error maybe something should be done  ¯\(ツ)/¯ ")
+        sign_in_app.sign_in()
     else:
         logging.info("I am on holiday, no check in")

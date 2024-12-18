@@ -41,7 +41,7 @@ def main(scheduler, delay, lunch_delay, lunch_times):
         max_time_to_lunch,
     ) = get_json_data()
 
-    # Setting up delays and times for the first time
+    # Setting up delays, times and dates for the first time
     lunch_time = None if lunch_time == "" else lunch_time
     if delay is None:
         logging.info("Setting up delays and times for the first time")
