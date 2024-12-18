@@ -15,14 +15,24 @@ def get_json_data():
 def is_sign_hour(sign_times, delay) -> bool:
     current_time = (datetime.now() - timedelta(minutes=delay)).strftime("%H:%M")
     weekday = time.localtime(time.time()).tm_wday
-    logging.debug('Is sign hour?: %s \ncurrent_time: %s \nsign_times: %s', current_time in sign_times and weekday not in {5, 6}, current_time, sign_times)
-    return current_time in sign_times and weekday not in {5, 6}
+
+    is_sign_hour = current_time in sign_times and weekday not in {5, 6}
+    if is_sign_hour:
+        logging.info("Signing in/out time!")
+    return is_sign_hour
 
 
 def is_lunch_time(lunch_sign_times, lunch_delay) -> bool:
     current_time = (datetime.now() - timedelta(minutes=lunch_delay)).strftime("%H:%M")
     weekday = time.localtime(time.time()).tm_wday
-    return current_time in lunch_sign_times and weekday not in {5, 6}
+
+    is_lunch_time = current_time in lunch_sign_times and weekday not in {5, 6}
+    if is_lunch_time:
+        if current_time == lunch_sign_times[0]:
+            logging.info("Lunch time!")
+        else:
+            logging.info("Back from lunch!")
+    return is_lunch_time
 
 
 def is_end_of_day(times, delay) -> bool:
