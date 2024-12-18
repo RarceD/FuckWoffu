@@ -7,9 +7,21 @@ from src.SignInWoffu import *
 from src.Telegram import notify
 
 def get_json_data():
-    with open('config/config.json', 'r') as file:
+    with open("config/config.json", "r") as file:
         json_content = json.load(file)
-        return json_content['email'], json_content['password'], json_content['companyName'], json_content['times'], json_content['summer_times'], json_content['summer_period'], json_content['unpunctuality'], json_content['lunch_unpunctuality'], json_content['lunch_time'], json_content['min_time_to_lunch'], json_content['max_time_to_lunch']
+        return (
+            json_content["email"],
+            json_content["password"],
+            json_content["companyName"],
+            json_content["times"],
+            json_content["summer_times"],
+            json_content["summer_period"],
+            json_content["unpunctuality"],
+            json_content["lunch_unpunctuality"],
+            json_content["lunch_time"],
+            json_content["min_time_to_lunch"],
+            json_content["max_time_to_lunch"],
+        )
 
 
 def is_sign_hour(sign_times, delay) -> bool:
@@ -50,13 +62,13 @@ def is_summer_time(summer_period) -> bool:
     if summer_period is None:
         return False
     current_time = datetime.today()
-    return (summer_period[0] <= current_time <= summer_period[1])
+    return summer_period[0] <= current_time <= summer_period[1]
 
 
 def set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch):
     if lunch_time is None:
         return []
-    
+
     lunch_start = datetime.strptime(lunch_time, "%H:%M")
     lunch_duration = randrange(min_time_to_lunch, max_time_to_lunch)
     lunch_end = lunch_start + timedelta(minutes=lunch_duration)
@@ -73,9 +85,9 @@ def sign_in(sign_in_app: SignInWoffu):
     if not is_holidays(holidays):
         success = sign_in_app.sign_in()
         if success:
-            notify('Sign in/out succesfully')
-            logging.info('Sign in/out succesfully')
+            notify("Sign in/out succesfully")
+            logging.info("Sign in/out succesfully")
         else:
-            logging.error('Error maybe something should be done  ¯\(ツ)/¯ ')
+            logging.error("Error maybe something should be done  ¯\(ツ)/¯ ")
     else:
-        logging.info('I am on holiday, no check in')
+        logging.info("I am on holiday, no check in")
