@@ -27,7 +27,7 @@ class TestUtils(unittest.TestCase):
 
     def test_is_holidays(self):
         holidays = [datetime.today()]
-        result = is_holidays(holidays)
+        result = is_working_day(holidays)
         self.assertIsInstance(result, bool)
 
     def test_is_summer_time(self):

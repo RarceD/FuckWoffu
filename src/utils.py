@@ -1,5 +1,4 @@
 import json
-import time
 import logging
 from datetime import datetime, timedelta
 from random import randrange
@@ -25,9 +24,8 @@ def get_json_data():
 
 def is_sign_hour(sign_times, delay) -> bool:
     current_time = (datetime.now() - timedelta(minutes=delay)).strftime("%H:%M")
-    weekday = time.localtime(time.time()).tm_wday
 
-    is_sign_hour = current_time in sign_times and weekday not in {5, 6}
+    is_sign_hour = current_time in sign_times
     if is_sign_hour:
         logging.info("Signing in/out time!")
     return is_sign_hour
@@ -35,9 +33,8 @@ def is_sign_hour(sign_times, delay) -> bool:
 
 def is_lunch_time(lunch_sign_times, lunch_delay) -> bool:
     current_time = (datetime.now() - timedelta(minutes=lunch_delay)).strftime("%H:%M")
-    weekday = time.localtime(time.time()).tm_wday
 
-    is_lunch_time = current_time in lunch_sign_times and weekday not in {5, 6}
+    is_lunch_time = current_time in lunch_sign_times
     if is_lunch_time:
         if current_time == lunch_sign_times[0]:
             logging.info("Lunch time!")
@@ -51,10 +48,23 @@ def is_end_of_day(times, delay) -> bool:
     return current_time == times[-1]
 
 
-def is_holidays(holidays) -> bool:
+def is_working_day(holidays) -> bool:
     current_time = datetime.today()
-    return any(pto.month == current_time.month and pto.day == current_time.day and pto.year == current_time.year 
-               for pto in holidays)
+    is_holidays = any(
+        pto.month == current_time.month
+        and pto.day == current_time.day
+        and pto.year == current_time.year
+        for pto in holidays
+    )
+    if is_holidays:
+        logging.info("Today is a holiday!")
+
+    weekday = current_time.weekday()
+    is_weekend = weekday in {5, 6}
+    if is_weekend:
+        logging.info("Today is weekend!")
+
+    return not (is_holidays or is_weekend)
 
 
 def is_summer_time(summer_period) -> bool:
@@ -81,7 +91,7 @@ def fix_times_format(times):
 
 def sign_in(sign_in_app: SignInWoffu):
     holidays = sign_in_app.get_holiday()
-    if not is_holidays(holidays):
+    if is_working_day(holidays):
         sign_in_app.sign_in()
     else:
-        logging.info("I am on holiday, no check in")
+        logging.info("No work day, no check in")
