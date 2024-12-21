@@ -98,5 +98,8 @@ class SignInWoffu(ISignInManager):
         if response.status_code == 200:
             return response.json()['access_token']
         else:
-            logging.error("Error getting token")
-            return '¯\(ツ)/¯'
+            error_message = (
+                f"Error getting token. Response code: {response.status_code} ¯\(ツ)/¯"
+            )
+            logging.error(error_message)
+            raise Exception(error_message)
