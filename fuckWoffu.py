@@ -2,12 +2,17 @@ import sched
 import time
 import logging
 import argparse
+import os
 from random import randrange
 from src.SignInWoffu import *
 from src.utils import *
 
 
 def conf_logging(loglevel):
+    # Create log file if it does not exist
+    log_dir = os.path.dirname("logs/fuckWoffu.log")
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
     logging.basicConfig(
         filename="logs/fuckWoffu.log",
         filemode="a",
