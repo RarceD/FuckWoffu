@@ -47,17 +47,16 @@ def main(scheduler, delay, lunch_delay, lunch_times):
     ) = get_json_data()
 
     # Setting up delays, times and dates for the first time
-    lunch_time = None if lunch_time == "" else lunch_time
     if delay is None:
         logging.info("Setting up delays and times for the first time")
-        delay = randrange(unpunctuality)
+        delay = randrange(unpunctuality) if unpunctuality > 0 else 0
     if lunch_delay is None:
-        lunch_delay = randrange(lunch_unpunctuality)
+        lunch_delay = randrange(lunch_unpunctuality) if lunch_unpunctuality > 0 else 0
     if lunch_times is None:
         lunch_times = set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch)
     summer = (
         None
-        if not summer_period
+        if summer_period is None
         else [
             datetime.strptime(f"{date}/{datetime.today().year}", "%d/%m/%Y")
             for date in summer_period
@@ -121,7 +120,5 @@ if __name__ == "__main__":
     logging.info("Starting application")
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enter(
-        TIME_TO_CHECK, 1, main, (scheduler, delay, lunch_delay, lunch_times)
-    )
+    scheduler.enter(0, 1, main, (scheduler, delay, lunch_delay, lunch_times))
     scheduler.run()

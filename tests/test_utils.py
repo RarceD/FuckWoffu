@@ -1,11 +1,44 @@
 import unittest
+from unittest.mock import patch, mock_open
 from datetime import datetime, timedelta
 from src.utils import *
 
 
 class TestUtils(unittest.TestCase):
-    def test_get_json_data(self):
-        self.assertIsNotNone(get_json_data())
+
+    @patch(
+        "src.utils.open",
+        new_callable=mock_open,
+        read_data='{"email": "test@example.com", "password": "password", "companyName": "test-company", "times": ["09:00", "18:00"], "summer_times": [], "summer_period": [], "unpunctuality": 10, "lunch_unpunctuality": 10, "lunch_time": "13:00", "min_time_to_lunch": 30, "max_time_to_lunch": 60}',
+    )
+    @patch("src.utils.json.load")
+    def test_get_json_data(self, mock_json_load, mock_open):
+        mock_json_load.return_value = {
+            "email": "test@example.com",
+            "password": "password",
+            "companyName": "test-company",
+            "times": ["09:00", "18:00"],
+            "summer_times": [],
+            "summer_period": [],
+            "unpunctuality": 10,
+            "lunch_unpunctuality": 10,
+            "lunch_time": "13:00",
+            "min_time_to_lunch": 30,
+            "max_time_to_lunch": 60,
+        }
+        result = get_json_data()
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "test@example.com")
+        self.assertEqual(result[1], "password")
+        self.assertEqual(result[2], "test-company")
+        self.assertEqual(result[3], ["09:00", "18:00"])
+        self.assertEqual(result[4], [])
+        self.assertEqual(result[5], None)
+        self.assertEqual(result[6], 10)
+        self.assertEqual(result[7], 10)
+        self.assertEqual(result[8], "13:00")
+        self.assertEqual(result[9], 30)
+        self.assertEqual(result[10], 60)
 
     @unittest.mock.patch("src.utils.datetime")
     def test_is_sign_hour(self, mock_datetime):
