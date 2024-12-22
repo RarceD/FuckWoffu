@@ -23,7 +23,7 @@ def get_json_data():
 
 
 def is_sign_hour(sign_times, delay) -> bool:
-    current_time = (datetime.now() - timedelta(minutes=delay)).strftime("%H:%M")
+    current_time = (datetime.today() - timedelta(minutes=delay)).strftime("%H:%M")
 
     is_sign_hour = current_time in sign_times
     if is_sign_hour:
@@ -32,7 +32,7 @@ def is_sign_hour(sign_times, delay) -> bool:
 
 
 def is_lunch_time(lunch_sign_times, lunch_delay) -> bool:
-    current_time = (datetime.now() - timedelta(minutes=lunch_delay)).strftime("%H:%M")
+    current_time = (datetime.today() - timedelta(minutes=lunch_delay)).strftime("%H:%M")
 
     is_lunch_time = current_time in lunch_sign_times
     if is_lunch_time:
@@ -44,7 +44,7 @@ def is_lunch_time(lunch_sign_times, lunch_delay) -> bool:
 
 
 def is_end_of_day(times, delay) -> bool:
-    current_time = (datetime.now() - timedelta(minutes=delay)).strftime("%H:%M")
+    current_time = (datetime.today() - timedelta(minutes=delay)).strftime("%H:%M")
     return current_time == times[-1]
 
 

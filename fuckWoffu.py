@@ -59,7 +59,7 @@ def main(scheduler, delay, lunch_delay, lunch_times):
         None
         if not summer_period
         else [
-            datetime.strptime(f"{date}/{datetime.now().year}", "%d/%m/%Y")
+            datetime.strptime(f"{date}/{datetime.today().year}", "%d/%m/%Y")
             for date in summer_period
         ]
     )

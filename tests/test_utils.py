@@ -7,36 +7,119 @@ class TestUtils(unittest.TestCase):
     def test_get_json_data(self):
         self.assertIsNotNone(get_json_data())
 
-    def test_is_sign_hour(self):
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_sign_hour(self, mock_datetime):
         sign_times = ["09:00", "18:00"]
         delay = 0
+        mock_datetime.today.return_value = datetime(
+            year=2024, month=12, day=16, hour=9, minute=0
+        )
+
         result = is_sign_hour(sign_times, delay)
         self.assertIsInstance(result, bool)
+        self.assertTrue(result)
 
-    def test_is_lunch_time(self):
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_sign_hour_delay(self, mock_datetime):
+        sign_times = ["09:00", "18:00"]
+        delay = 5
+        mock_datetime.today.return_value = datetime(
+            year=2024, month=12, day=16, hour=9, minute=5
+        )
+
+        result = is_sign_hour(sign_times, delay)
+        self.assertIsInstance(result, bool)
+        self.assertTrue(result)
+
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_sign_hour_false(self, mock_datetime):
+        sign_times = ["09:00", "18:00"]
+        delay = 0
+        mock_datetime.today.return_value = datetime(
+            year=2024, month=12, day=16, hour=9, minute=5
+        )
+
+        result = is_sign_hour(sign_times, delay)
+        self.assertIsInstance(result, bool)
+        self.assertFalse(result)
+
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_lunch_time(self, mock_datetime):
         lunch_sign_times = ["13:00", "14:00"]
         lunch_delay = 0
+        mock_datetime.today.return_value = datetime(
+            year=2024, month=12, day=16, hour=13, minute=0
+        )
+
         result = is_lunch_time(lunch_sign_times, lunch_delay)
         self.assertIsInstance(result, bool)
+        self.assertTrue(result)
 
-    def test_is_end_of_day(self):
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_lunch_time_delay(self, mock_datetime):
+        lunch_sign_times = ["13:00", "14:00"]
+        lunch_delay = 5
+        mock_datetime.today.return_value = datetime(
+            year=2024, month=12, day=16, hour=13, minute=5
+        )
+
+        result = is_lunch_time(lunch_sign_times, lunch_delay)
+        self.assertIsInstance(result, bool)
+        self.assertTrue(result)
+
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_lunch_time_false(self, mock_datetime):
+        lunch_sign_times = ["13:00", "14:00"]
+        lunch_delay = 0
+        mock_datetime.today.return_value = datetime(
+            year=2024, month=12, day=16, hour=13, minute=5
+        )
+
+        result = is_lunch_time(lunch_sign_times, lunch_delay)
+        self.assertIsInstance(result, bool)
+        self.assertFalse(result)
+
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_end_of_day(self, mock_datetime):
         times = ["09:00", "18:00"]
         delay = 0
         result = is_end_of_day(times, delay)
         self.assertIsInstance(result, bool)
 
-    def test_is_holidays(self):
-        holidays = [datetime.today()]
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_working_day_holidays(self, mock_datetime):
+        mock_datetime.today.return_value = datetime(year=2024, month=12, day=16)
+        holidays = [datetime(year=2024, month=12, day=16)]
         result = is_working_day(holidays)
         self.assertIsInstance(result, bool)
+        self.assertFalse(result)
 
-    def test_is_summer_time(self):
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_working_day_weekday(self, mock_datetime):
+        mock_datetime.today.return_value = datetime(year=2024, month=12, day=16)
+        holidays = []
+        result = is_working_day(holidays)
+        self.assertIsInstance(result, bool)
+        self.assertTrue(result)
+
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_working_day_weekend(self, mock_datetime):
+        mock_datetime.today.return_value = datetime(year=2024, month=12, day=21)
+        holidays = []
+        result = is_working_day(holidays)
+        self.assertIsInstance(result, bool)
+        self.assertFalse(result)
+
+    @unittest.mock.patch("src.utils.datetime")
+    def test_is_summer_time(self, mock_datetime):
+        mock_datetime.today.return_value = datetime(year=2024, month=12, day=21)
         summer_period = [
-            datetime.today(),
-            datetime.today(),
+            datetime(year=2024, month=12, day=21),
+            datetime(year=2024, month=12, day=21),
         ]
         result = is_summer_time(summer_period)
         self.assertIsInstance(result, bool)
+        self.assertTrue(result)
 
     def test_set_lunch_times(self):
         lunch_time = "13:00"
@@ -56,6 +139,14 @@ class TestUtils(unittest.TestCase):
             datetime.strptime(result[0], "%H:%M")
             + timedelta(minutes=max_time_to_lunch),
         )
+
+    def test_set_lunch_times_no_lunch(self):
+        lunch_time = None
+        min_time_to_lunch = 30
+        max_time_to_lunch = 60
+        result = set_lunch_times(lunch_time, min_time_to_lunch, max_time_to_lunch)
+        self.assertIsInstance(result, list)
+        self.assertListEqual(result, [])
 
     def test_fix_times_format(self):
         times = ["9:0", "18:0"]
