@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
-
+import logging
+from src.Telegram import notify
 from src.ISignInManager import ISignInManager
 
 
@@ -14,7 +15,7 @@ class SignInWoffu(ISignInManager):
             'Content-Type': 'application/json'
         }
 
-    def sign_in(self) -> bool:
+    def sign_in(self):
         url = self.url_path + "/svc/signs/signs"
         payload = {
             "agreementEventId": None,
@@ -26,7 +27,14 @@ class SignInWoffu(ISignInManager):
         }
         response = requests.post(
             url, json=payload, headers=self.headers_token)
-        return response.status_code == 201
+        if response.status_code == 201:
+            notify("Sign in/out succesfully")
+            logging.info("Sign in/out succesfully")
+        else:
+            logging.error(
+                "Error maybe something should be done. Response code: %s ¯\(ツ)/¯ ",
+                response.status_code,
+            )
 
     def get_holiday(self):
         return self._get_bank_holiday() + self._get_pto_holiday()
@@ -40,6 +48,10 @@ class SignInWoffu(ISignInManager):
             for day in holidays_array:
                 holidays_list.append(datetime.strptime(
                     day['Date'], '%Y-%m-%dT%H:%M:%S.%f'))
+        else:
+            logging.error(
+                "Error getting bank holidays. Response code: " + response.status_code
+            )
         return holidays_list
 
     def _get_pto_holiday(self):
@@ -50,6 +62,10 @@ class SignInWoffu(ISignInManager):
             holidays_array = response.json()
             for day in holidays_array:
                 self._calculate_vacation_range(day, holidays_list)
+        else:
+            logging.error(
+                "Error getting PTO holidays. Response code: " + response.status_code
+            )
         return holidays_list
 
     def _calculate_vacation_range(self, day, holidays_list):
@@ -82,4 +98,8 @@ class SignInWoffu(ISignInManager):
         if response.status_code == 200:
             return response.json()['access_token']
         else:
-            return '¯\(ツ)/¯'
+            error_message = (
+                f"Error getting token. Response code: {response.status_code} ¯\(ツ)/¯"
+            )
+            logging.error(error_message)
+            raise Exception(error_message)

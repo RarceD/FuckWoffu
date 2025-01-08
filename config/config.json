@@ -1,0 +1,17 @@
+{
+    "email": "",
+    "password": "",
+    "companyName": "",
+
+    "times": ["09:00", "17:30"],
+
+    "summer_times": [],
+    "summer_period": [],
+
+    "unpunctuality": 10,
+    "lunch_unpunctuality": 60,
+
+    "lunch_time": "13:00",
+    "min_time_to_lunch": 30,
+    "max_time_to_lunch": 60
+}
