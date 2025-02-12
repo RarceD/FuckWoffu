@@ -194,7 +194,9 @@ def fix_times_format(times):
     return [datetime.strptime(time, "%H:%M").strftime("%H:%M") for time in times]
 
 
-def sign_in(sign_in_app: SignInWoffu):
+def sign_in(email, password, company_name):
+    sign_in_app = SignInWoffu(email, password, company_name)
+
     holidays = sign_in_app.get_holiday()
     if is_working_day(holidays):
         sign_in_app.sign_in()

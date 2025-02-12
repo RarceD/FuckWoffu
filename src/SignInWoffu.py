@@ -1,9 +1,12 @@
 import requests
 from datetime import datetime, timedelta
 import logging
+import time
 from src.Telegram import notify
 from src.ISignInManager import ISignInManager
 
+
+MAX_LOGIN_ATTEMPTS = 60
 
 class SignInWoffu(ISignInManager):
     def __init__(self, email, password, company_name):
@@ -94,12 +97,31 @@ class SignInWoffu(ISignInManager):
             "username": email,
             "password": password
         }
-        response = requests.post(url, headers=headers, data=data)
-        if response.status_code == 200:
-            return response.json()['access_token']
-        else:
-            error_message = (
-                f"Error getting token. Response code: {response.status_code} ¯\(ツ)/¯"
-            )
-            logging.error(error_message)
-            raise Exception(error_message)
+
+        for attempt in range(MAX_LOGIN_ATTEMPTS):
+            try:
+                response = requests.post(url, headers=headers, data=data)
+                if response.status_code == 200:
+                    token = response.json().get("access_token")
+                    if token:
+                        return token
+                    else:
+                        logging.error(
+                            f"Attempt {attempt + 1}: Token not found in response."
+                        )
+                        err = "Token not found in response"
+
+                else:
+                    logging.error(
+                        f"Attempt {attempt + 1}: Error getting token. Response code: {response.status_code}"
+                    )
+                    err = response.status_code
+
+            except requests.exceptions.ConnectionError as e:
+                logging.error(f"Attempt {attempt + 1}: Connection error occurred. {e}")
+                err = e
+            time.sleep(60)
+
+        error_message = f"Failed to get token after {MAX_LOGIN_ATTEMPTS} attempts. Last error: {err} ¯\(ツ)/¯"
+        logging.error(error_message)
+        raise Exception(error_message)
