@@ -86,14 +86,14 @@ nohup python3 fuckWoffu.py &
 
 ## Run with docker
 
-Manually create image and run container:
+### Manually create image and run container
 
 ```sh
 docker build -t py-woffu-app .
 docker run py-woffu-app
 ```
 
-Directly by composer:
+### Directly by composer
 
 ```sh
 docker compose up

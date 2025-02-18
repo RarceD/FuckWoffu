@@ -107,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-log",
         "--loglevel",
-        default="warning",
+        default=os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "info",
         help="Provide logging level. Example --loglevel debug, default=warning",
     )
     args = parser.parse_args()
