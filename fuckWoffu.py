@@ -4,7 +4,6 @@ import logging
 import argparse
 import os
 from random import randrange
-from src.SignInWoffu import *
 from src.utils import *
 
 
@@ -65,27 +64,25 @@ def main(scheduler, delay, lunch_delay, lunch_times):
     times = fix_times_format(times)
     summer_times = fix_times_format(summer_times)
 
-    sign_in_app = SignInWoffu(email, password, company_name)
-
     if is_summer_time(summer):  # Summer time
         if is_sign_hour(summer_times, delay):
             if is_end_of_day(summer_times, delay):
                 time.sleep(randrange(unpunctuality) * 60)  # Randomizing time to leave
                 logging.info("End of day!")
-                sign_in(sign_in_app)
+                sign_in(email, password, company_name)
 
                 delay = randrange(unpunctuality)  # Create new random delay for next day
 
                 time.sleep(unpunctuality * 60)
             else:
-                sign_in(sign_in_app)
+                sign_in(email, password, company_name)
 
     else:  # Regular time
         if is_sign_hour(times, delay) or is_lunch_time(lunch_times, lunch_delay):
             if is_end_of_day(times, delay):
                 time.sleep(randrange(unpunctuality) * 60)  # Randomizing time to leave
                 logging.info("End of day!")
-                sign_in(sign_in_app)
+                sign_in(email, password, company_name)
 
                 delay = randrange(unpunctuality)  # Create new random delay for next day
 
@@ -97,7 +94,7 @@ def main(scheduler, delay, lunch_delay, lunch_times):
                 )  # Create new random delay and duration for lunch for next day
                 time.sleep(unpunctuality * 60)
             else:
-                sign_in(sign_in_app)
+                sign_in(email, password, company_name)
 
     # Restart the timer
     scheduler.enter(
@@ -110,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-log",
         "--loglevel",
-        default="warning",
+        default=os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "info",
         help="Provide logging level. Example --loglevel debug, default=warning",
     )
     args = parser.parse_args()

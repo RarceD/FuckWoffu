@@ -1,7 +1,8 @@
-version: '3'
-
 services:
   woffu:
     build: .
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
-      - .:/usr/src/app
+      - ./config/config.json:/usr/app/config/config.json:ro
+      - ./logs/:/usr/app/logs/:rw
