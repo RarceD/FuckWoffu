@@ -53,10 +53,10 @@ class SignInWoffu(ISignInManager):
         return holidays_list
 
     def _calculate_vacation_range(self, day, holidays_list):
-        requested_days = int(day['RequestedFormatted']['Values'][0])
+        requested_days = float(day['RequestedFormatted']['Values'][0])
         first_day = datetime.strptime(
             day['StartDate'], '%Y-%m-%dT%H:%M:%S.%f')
-        if requested_days == 1:
+        if requested_days == float(1) or requested_days == float(0.5):
             holidays_list.append(first_day)
             return
 
