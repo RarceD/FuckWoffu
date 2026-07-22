@@ -1,20 +1,52 @@
-# Woffu Auto Check-In script
+# 🕒 FuckWoffu — Woffu Auto Check-In
 
-Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](https://www.woffu.com/en). It detects holidays and only execute it when on working days.
+**Stop babysitting the clock-in button.** FuckWoffu is a tiny Python service that automatically clicks `Clock In` and `Clock Out` for you in [Woffu](https://www.woffu.com/en) — at the right times, on working days only, skipping your holidays and PTO, and even randomizing your entry/leave/lunch so it looks convincingly human.
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FRarceD%2FFuckWoffu&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Hits%3A&edge_flat=false)](https://hits.seeyoufarm.com)
+Set it once. Forget it forever.
 
-## Set up
 
-1. You need Python 3.6+ and run:
+---
+
+## ⏳ How much time does manual check-in actually waste?
+
+It feels like nothing — a couple of clicks. But add it up:
+
+- Open the app/website, wait for it to load, find the button, click **Clock In**. Repeat for lunch out, lunch back, and **Clock Out**.
+- Realistically **~1–2 minutes per interaction**, 4 interactions a day.
+
+| Cadence | Time per day | Per work week | Per month (~22 days) | Per year (~220 days) |
+| --- | --- | --- | --- | --- |
+| **~1 min × 4 clicks** | ~4 min | ~20 min | ~1h 28m | **~14.7 hours** |
+| **~2 min × 4 clicks** | ~8 min | ~40 min | ~2h 56m | **~29.3 hours** |
+
+That's **up to ~4 full working days a year** spent clicking a button — not counting the days you *forget* to clock in and have to email HR to fix your timesheet. 😬
+
+FuckWoffu drops that to **zero**.
+
+---
+
+## ✨ Features
+
+- ⏰ **Automatic clock in / out** at your configured times.
+- 📅 **Working-days only** — skips weekends automatically.
+- 🏖️ **Holiday & PTO aware** — reads your Woffu calendar and stays quiet on days off.
+- 🍽️ **Lunch break support** with a **randomized duration** every day.
+- 🎲 **Human-like unpunctuality** — randomizes entry, leave and lunch times so you're never suspiciously precise.
+- ☀️ **Summer schedule** — different hours for a configurable summer period.
+- 📝 **Logging** with configurable levels for peace of mind.
+- 🐳 **Docker-ready** — run it as a container and never think about it again.
+
+---
+
+## 🚀 Set up
+
+1. You need **Python 3.6+**, then install dependencies:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-2. Open `config/secrets.json` file and make the following changes:
-
-    Add your credential, login email and company name.
+2. Open `config/config.json` and add your Woffu credentials, login email and company name:
 
     ```json
     {
@@ -24,7 +56,7 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
     }
     ```
 
-3. You need to provide the hours you are supposed to click the annoying button. You need to sign in and then sign out.
+3. Set the hours you'd otherwise click the annoying button. First value signs you in, last signs you out:
 
     ```json
     {
@@ -32,7 +64,7 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
     }
     ```
 
-4. You can add your lunch time to clock out and the minimum and maximum duration of your lunch, it will be randomized every day.
+4. (Optional) Add a lunch time to clock out, plus the minimum and maximum lunch duration — it gets randomized every day:
 
     ```json
     {
@@ -42,7 +74,7 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
     }
     ```
 
-5. If you don't have lunch break, just leave the time empty.
+5. If you don't take a lunch break, just leave the time empty:
 
     ```json
     {
@@ -50,7 +82,7 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
     }
     ```
 
-6. There is an option to randomize your entry, leave and lunch time to look more human. You just have to set the maximum unpunctuality for your entry and leave, and lunch.
+6. (Optional) Randomize your entry, leave and lunch times to look more human. Set the maximum unpunctuality (in minutes) for entry/leave and for lunch:
 
     ```json
     {
@@ -59,7 +91,7 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
     }
     ```
 
-7. If you have summer time (maybe it doesn't exist in your country) fill it with the times like the regular ones and the starting and ending day without the year like in this example:
+7. (Optional) If you have a summer schedule, fill in the summer times and the start/end day (no year needed):
 
     ```json
     {
@@ -68,33 +100,49 @@ Simple script in that click on `Clock In` and `Clock Out` button inside [Woffu](
     }
     ```
 
-Forget about everything else, it also detects your holidays/PTO and does not clock in.
+Forget about everything else — it also detects your holidays/PTO and won't clock in on those days.
 
-## Run with python
+---
 
-Execute the following command:
+## ▶️ Run with Python
 
 ```bash
 python3 fuckWoffu.py
 ```
 
-Run as background service without logs:
+Run as a background service without logs:
 
 ```bash
 nohup python3 fuckWoffu.py &
 ```
 
-## Run with docker
+Set the logging level (e.g. `debug`, `info`, `warning`):
 
-### Manually create image and run container
+```bash
+python3 fuckWoffu.py --loglevel debug
+```
+
+Logs are written to `logs/fuckWoffu.log`.
+
+---
+
+## 🐳 Run with Docker
+
+### Manually build the image and run the container
 
 ```sh
 docker build -t py-woffu-app .
 docker run py-woffu-app
 ```
 
-### Directly by composer
+### Directly with Compose
 
 ```sh
 docker compose up
 ```
+
+---
+
+## ⚠️ Disclaimer
+
+This tool is intended for personal automation of your own attendance. Make sure automating your check-in complies with your company's policies and your local labor regulations. Use responsibly.
